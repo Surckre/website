@@ -1,1 +1,124 @@
-<h1>.</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animiertes Leckei</title>
+    <style>
+        /* Zentrierung des Inhalts */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+        }
+
+        .container {
+            position: relative;
+            width: 200px;
+            height: 250px;
+        }
+
+        /* Das Ei */
+        .ei {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            width: 100px;
+            height: 130px;
+            background-color: #fffdf5;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.05), 5px 10px 15px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        /* Der Riss im Ei */
+        .ei::after {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 45px;
+            width: 10px;
+            height: 5px;
+            background-color: #d1ccc0;
+            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+        }
+
+        /* Die Tropfen-Animation */
+        .tropfen {
+            position: absolute;
+            top: 80px; /* Startpunkt am Riss */
+            left: 95px;
+            width: 12px;
+            height: 12px;
+            background-color: #FFD700; /* Goldgelb */
+            border-radius: 0 50% 50% 50%;
+            transform: rotate(45deg);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* JavaScript fügt diese Klasse hinzu */
+        .animieren {
+            animation: fliessen 3s infinite ease-in;
+        }
+
+        @keyframes fliessen {
+            0% {
+                top: 70px;
+                height: 12px;
+                opacity: 0;
+                transform: rotate(45deg) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: rotate(45deg) scale(1);
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                top: 200px; /* Läuft am Ei herunter */
+                height: 25px; /* Verzieht sich beim Fallen */
+                opacity: 0;
+                transform: rotate(45deg) scale(0.8);
+            }
+        }
+
+        /* Schatten am Boden */
+        .schatten {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            width: 80px;
+            height: 15px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="schatten"></div>
+        <div class="ei"></div>
+        <div id="gelb" class="tropfen"></div>
+    </div>
+
+    <script>
+        // Startet die Animation automatisch
+        const tropfen = document.getElementById('gelb');
+        
+        function startLoop() {
+            tropfen.classList.add('animieren');
+        }
+
+        // Ein kleiner Timer, um sicherzugehen, dass alles geladen ist
+        window.onload = startLoop;
+    </script>
+</body>
+</html>
