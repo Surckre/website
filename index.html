@@ -3,39 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animiertes Leckei</title>
+    <title>Animierte Leck Eier</title>
     <style>
-        /* Zentrierung des Inhalts */
+        /* Grundstyling */
         body {
             display: flex;
+            flex-direction: column; /* Text über Eiern ausrichten */
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-            font-family: sans-serif;
+            background-color: #f7f3e8; /* Etwas wärmerer Hintergrund */
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+            overflow: hidden; /* Verhindert Scrollbalken */
         }
 
-        .container {
+        /* Überschrift Styling */
+        .titel {
+            font-size: 3rem;
+            color: #d1b88a;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Container für beide Eier */
+        .eier-container {
+            display: flex;
+            gap: 40px; /* Abstand zwischen den Eiern */
             position: relative;
-            width: 200px;
-            height: 250px;
         }
 
-        /* Das Ei */
+        /* Gemeinsame Ei-Basis */
         .ei {
-            position: absolute;
-            bottom: 50px;
-            left: 50px;
+            position: relative;
             width: 100px;
             height: 130px;
             background-color: #fffdf5;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: inset -10px -10px 20px rgba(0,0,0,0.05), 5px 10px 15px rgba(0,0,0,0.1);
             z-index: 2;
+            
+            /* Neue Dreh-Animation */
+            animation: eierDrehen 5s infinite linear;
+            transform-origin: center bottom; /* Dreht sich um die untere Mitte */
         }
 
-        /* Der Riss im Ei */
+        /* Dreh-Animation Definition */
+        @keyframes eierDrehen {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); } /* Leichtes Schwanken nach rechts */
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); } /* Leichtes Schwanken nach links */
+            100% { transform: rotate(0deg); }
+        }
+
+        /* Der Riss (wie im letzten Beispiel, jetzt auf beiden Eiern) */
         .ei::after {
             content: "";
             position: absolute;
@@ -47,77 +70,92 @@
             clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
         }
 
-        /* Die Tropfen-Animation */
+        /* Tropfen Styling & Animation (angepasst für leckenden Effekt) */
         .tropfen {
             position: absolute;
-            top: 80px; /* Startpunkt am Riss */
-            left: 95px;
             width: 12px;
             height: 12px;
-            background-color: #FFD700; /* Goldgelb */
+            background-color: #FFD700;
             border-radius: 0 50% 50% 50%;
             transform: rotate(45deg);
             opacity: 0;
             z-index: 1;
         }
 
-        /* JavaScript fügt diese Klasse hinzu */
-        .animieren {
-            animation: fliessen 3s infinite ease-in;
+        /* JavaScript fügt diese Klassen hinzu */
+        .tropfen1.animieren {
+            animation: lecken 2.5s infinite ease-in;
+            left: 95px; /* Position am Riss vom ersten Ei */
         }
 
-        @keyframes fliessen {
+        .tropfen2.animieren {
+            animation: lecken 2.8s infinite ease-in 0.5s; /* Versetzte Animation */
+            left: 235px; /* Position am Riss vom zweiten Ei (gap berücksichtigen) */
+        }
+
+        /* Leck-Animation Definition */
+        @keyframes lecken {
             0% {
-                top: 70px;
+                top: 70px; /* Höhe des Risses */
                 height: 12px;
                 opacity: 0;
                 transform: rotate(45deg) scale(0.5);
             }
-            20% {
+            15% {
                 opacity: 1;
-                transform: rotate(45deg) scale(1);
+                transform: rotate(45deg) scale(1.2); /* Tropfen schwillt an */
             }
             80% {
-                opacity: 1;
+                opacity: 0.8;
+                top: 150px; /* Läuft am Ei herunter */
+                height: 20px;
             }
             100% {
-                top: 200px; /* Läuft am Ei herunter */
-                height: 25px; /* Verzieht sich beim Fallen */
+                top: 180px; /* Fällt kurz ab */
+                height: 10px;
                 opacity: 0;
                 transform: rotate(45deg) scale(0.8);
             }
         }
 
-        /* Schatten am Boden */
-        .schatten {
+        /* Schatten am Boden (angepasst für zwei Eier) */
+        .eier-container::before {
+            content: "";
             position: absolute;
-            bottom: 40px;
-            left: 60px;
-            width: 80px;
+            bottom: -15px;
+            left: 10px;
+            width: 220px; /* Breite für beide Eier */
             height: 15px;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.08);
             border-radius: 50%;
-            filter: blur(4px);
+            filter: blur(5px);
+            z-index: 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="schatten"></div>
-        <div class="ei"></div>
-        <div id="gelb" class="tropfen"></div>
+    <div class="titel">Leck Eier</div>
+
+    <div class="eier-container">
+        <div class="ei" id="ei1"></div>
+        <div class="ei" id="ei2"></div>
+        
+        <div id="gelb1" class="tropfen tropfen1"></div>
+        <div id="gelb2" class="tropfen tropfen2"></div>
     </div>
 
     <script>
-        // Startet die Animation automatisch
-        const tropfen = document.getElementById('gelb');
+        // Startet die Animationen für beide Tropfen
+        const tropfen1 = document.getElementById('gelb1');
+        const tropfen2 = document.getElementById('gelb2');
         
         function startLoop() {
-            tropfen.classList.add('animieren');
+            tropfen1.classList.add('animieren');
+            tropfen2.classList.add('animieren');
         }
 
-        // Ein kleiner Timer, um sicherzugehen, dass alles geladen ist
+        // Timer, um sicherzugehen, dass alles geladen ist
         window.onload = startLoop;
     </script>
 </body>
